@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+
+const title = 'Delta Force Ammo & Armor Tiers Explained | DF TOOLS';
+const description =
+  'Delta Force ammo and armor tiers explained: what Tier 1–6 means, how the tier gap decides damage, and when running under-tier ammo is the right call.';
+const updated = '2026-10-08';
+
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Delta Force ammo and armor tiers explained',
+  datePublished: '2026-10-08',
+  dateModified: updated,
+  author: { '@type': 'Organization', name: 'DF TOOLS' },
+};
+---
+
+<Base title={title} description={description} schema={[articleLd]}>
+  <Breadcrumbs items={[{ name: 'Guides' }, { name: 'Ammo & Armor Tiers Explained' }]} />
+  <div class="page-head">
+    <h1>Ammo &amp; armor tiers explained</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">
+      Six ammo tiers, six armor tiers, and one rule that decides most gunfights: the gap between them. Here's what
+      each tier is for, what the gap does, and when budget ammo is the smart play.
+    </p>
+    <div class="microline"><span>By DF TOOLS</span><span>Updated {updated}</span></div>
+  </div>
+
+  <section class="prose">
+    <h2>Quick answer</h2>
+    <p>
+      Every round and every plate has a tier from 1 to 6. The closer your ammo tier is to the armor tier in front
+      of you, the more damage gets through — same tier penetrates roughly half the time, one tier above about
+      three quarters, and two-plus tiers above punches through almost every shot. Under-tier ammo still kills
+      unarmored and lightly armored targets just fine.
+    </p>
+    <div class="hazard">See every matchup at once on the <a href="/ammo-chart/">ammo chart</a> → then check your gun on the <a href="/ttk-calculator/">TTK calculator</a>.</div>
+
+    <h2>The tier ladder</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Tier</th><th>Typical role</th><th>Think of it as</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill t1">Tier 1</span></td><td>Starting pistols, budget SMG rounds</td><td>Paper — dies to anything</td></tr>
+          <tr><td><span class="pill t2">Tier 2</span></td><td>Early-raid plates and cheap overpressured rounds</td><td>A hoodie with opinions</td></tr>
+          <tr><td><span class="pill t3">Tier 3</span></td><td>The mid-raid standard most players wear</td><td>The common denominator</td></tr>
+          <tr><td><span class="pill t4">Tier 4</span></td><td>Serious mid-game kits</td><td>Where most fights are decided</td></tr>
+          <tr><td><span class="pill t5">Tier 5</span></td><td>Endgame farming kits</td><td>Pay-to-penetrate territory</td></tr>
+          <tr><td><span class="pill t6">Tier 6</span></td><td>Top-end plates and ammo</td><td>The final boss of armor</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Row descriptions are community loadout conventions for orientation — not official tier definitions.</p>
+
+    <h2>What the gap does</h2>
+    <ul>
+      <li><strong>Ammo 2+ tiers above armor:</strong> near-total penetration — the plate barely matters.</li>
+      <li><strong>One tier above:</strong> roughly 75% of shots punch through.</li>
+      <li><strong>Same tier:</strong> about 50% since the penetration rebalance.</li>
+      <li><strong>One tier below:</strong> about 25% — you're paying full ammo price to lose most gunfights to the plate.</li>
+      <li><strong>Two or more below:</strong> the plate soaks nearly everything. Bring a knife and accept your fate.</li>
+    </ul>
+
+    <h2>When under-tier ammo is fine</h2>
+    <ol class="steps">
+      <li>You're farming low-risk raids where Tier 1–2 plates dominate — Tier 2–3 ammo kills everything for a fraction of the cost.</li>
+      <li>Your gun's raw damage is high enough that even 10–25% penetration ends fights in a practical number of shots — verify on the <a href="/ttk-calculator/">TTK calculator</a>.</li>
+      <li>You're saving for a better plate, which stops more damage per Koena than premium ammo starts.</li>
+    </ol>
+
+    <h2>Common mistakes</h2>
+    <ul>
+      <li>Buying Tier 6 ammo "to be safe" into lobbies of Tier 2 plates — pure profit donation.</li>
+      <li>Judging ammo by its damage stat instead of its tier; the tier is what the plate cares about.</li>
+      <li>Forgetting durability: even winning tier matchups weaken as plates chip. Check the armor-break shot on the calculator.</li>
+    </ul>
+  </section>
+</Base>

@@ -1,0 +1,24 @@
+---
+interface Props {
+  tool: string;
+  description: string;
+  /** Page this tool belongs to for breadcrumb purposes */
+  faqCount?: number;
+}
+const { tool, description } = Astro.props;
+
+const appLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: tool,
+  applicationCategory: 'GameApplication',
+  operatingSystem: 'Any (web browser)',
+  description,
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'DF TOOLS', url: Astro.site?.toString() },
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(appLd)} />

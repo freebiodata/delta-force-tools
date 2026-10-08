@@ -1,0 +1,16 @@
+---
+import { lastVerified } from '../data/game';
+
+interface Props {
+  tool: string;
+}
+const { tool } = Astro.props;
+const today = new Date().toISOString().slice(0, 10);
+---
+
+<div class="trust">
+  <strong>Maintained by DF TOOLS</strong> · Built as a free, no-ads, no-account companion for Delta Force players.
+  Mechanics data last reviewed <span class="mono">{lastVerified}</span> · Page updated <span class="mono">{today}</span> ·
+  Formulas and data policy: <a href="/methodology/">Methodology</a> ·
+  Found an error? <a href={`/contact/?subject=${encodeURIComponent(tool)}`}>Report it</a>.
+</div>

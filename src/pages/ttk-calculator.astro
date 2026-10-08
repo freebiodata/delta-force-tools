@@ -1,0 +1,227 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Faq from '../components/Faq.astro';
+import TrustBlock from '../components/TrustBlock.astro';
+import ToolSchema from '../components/ToolSchema.astro';
+import { TIERS, lastVerified } from '../data/game';
+
+const title = 'Delta Force TTK Calculator – Ammo vs Armor | DF TOOLS';
+const description =
+  'Free Delta Force TTK calculator: simulate shots-to-kill and time-to-kill against any armor tier. Ammo tier, armor durability, hit area and falloff included. No sign-up.';
+
+const faqs = [
+  {
+    q: 'How is TTK calculated in Delta Force?',
+    a: 'TTK = (shots to kill − 1) × 60,000 ÷ fire rate (RPM). The hard part is shots to kill against armor: your ammo tier versus the target\'s armor tier decides how much of each bullet\'s damage actually reaches the operator\'s health pool. This calculator simulates it shot by shot.',
+  },
+  {
+    q: 'Does ammo tier really matter more than raw damage?',
+    a: 'Against unarmored targets, raw damage and fire rate decide everything. Against Tier 3+ armor, the tier gap dominates: under-tier ammo loses so much damage to the plate that a lower-damage, higher-tier round often kills faster. Run both through the calculator to compare your exact gun.',
+  },
+  {
+    q: 'Why does same-tier ammo only penetrate about half the time?',
+    a: 'Community testing after the penetration rebalance reports roughly 50% penetration on matching tiers, down from about 75% earlier in the game\'s life — while being one tier above armor gives about 75%. These values change with patches, so check the Methodology page for what is currently assumed and verify against your own tests.',
+  },
+  {
+    q: 'Does armor durability affect TTK?',
+    a: 'Yes. Every blocked shot chips the plate. The calculator takes armor durability as an input: a half-broken Tier 4 plate soaks far fewer shots than a fresh one, which is why shooting the same armored target can take noticeably longer mid-raid.',
+  },
+  {
+    q: 'Do headshots go through armor?',
+    a: 'Headshot damage multipliers vary by helmet and ammo and are not officially published, so this tool treats the multiplier as an input you control. The default is a community estimate — set it to your own tested value for accurate results.',
+  },
+];
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a.replace(/<[^>]+>/g, '') },
+  })),
+};
+---
+
+<Base title={title} description={description} schema={[faqLd]}>
+  <Breadcrumbs items={[{ name: 'Tools', href: '/tools/' }, { name: 'TTK Calculator' }]} />
+  <ToolSchema tool="Delta Force TTK Calculator" description={description} />
+
+  <div class="page-head">
+    <h1>Delta Force TTK Calculator</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">
+      Simulate shots-to-kill and time-to-kill against any armor tier before you spend a single Koena.
+      Set your gun, pick the ammo and the plate you are facing, and see exactly where the armor breaks.
+    </p>
+    <div class="microline">
+      <span>Free</span><span>No sign-up</span><span>Runs in your browser</span><span>Data reviewed {lastVerified}</span>
+    </div>
+  </div>
+
+  <form class="tool panel" id="ttk" autocomplete="off" onsubmit="return false">
+    <div class="fields">
+      <label class="field"><span>Damage per shot</span><input id="dmg" type="number" value="42" min="1" step="0.5" inputmode="decimal" /><small>Torso damage, at your range</small></label>
+      <label class="field"><span>Fire rate (RPM)</span><input id="rpm" type="number" value="700" min="1" step="1" inputmode="numeric" /><small>Rounds per minute</small></label>
+      <label class="field"><span>Your ammo tier</span>
+        <select id="ammo">
+          {TIERS.map((t) => <option value={t.tier} selected={t.tier === 4}>{t.name}</option>)}
+        </select>
+        <small>Higher tier = more penetration</small>
+      </label>
+      <label class="field"><span>Target armor tier</span>
+        <select id="armor">
+          <option value="0">No armor</option>
+          {TIERS.map((t) => <option value={t.tier} selected={t.tier === 4}>{t.name}</option>)}
+        </select>
+        <small>Plate the target is wearing</small>
+      </label>
+      <label class="field"><span>Armor durability</span><input id="armorhp" type="number" value="50" min="0" step="1" inputmode="numeric" /><small>Points left on the plate</small></label>
+      <label class="field"><span>Target health</span><input id="bodyhp" type="number" value="100" min="1" step="1" inputmode="numeric" /><small>Health pool (default 100)</small></label>
+      <label class="field"><span>Hit area</span>
+        <select id="area">
+          <option value="1" selected>Chest (×1.0)</option>
+          <option value="2">Head (×2.0)</option>
+          <option value="0.9">Limbs (×0.9)</option>
+        </select>
+        <small>Multipliers are editable estimates</small>
+      </label>
+      <label class="field"><span>Damage at range</span><input id="falloff" type="number" value="100" min="10" max="100" step="1" inputmode="numeric" /><small>% of torso damage at your distance</small></label>
+    </div>
+    <button class="btn" type="button" onclick="computeTTK()">Simulate</button>
+    <button class="btn btn-ghost" type="button" onclick="loadExample()">Load example</button>
+  </form>
+
+  <div class="result" id="result" aria-live="polite"></div>
+
+  <section class="prose">
+    <h2>How to use the TTK calculator</h2>
+    <ol class="steps">
+      <li>Enter your weapon's torso damage and fire rate — both are visible on the gun's stats screen in the loadout menu.</li>
+      <li>Pick your ammo tier and the armor tier you expect to face. Not sure what tiers mean? Read <a href="/guides/ammo-armor-tiers-explained/">ammo &amp; armor tiers explained</a>.</li>
+      <li>Set the target's remaining armor durability if you know it — default is a fresh plate.</li>
+      <li>Choose hit area and range damage to match how you actually shoot, then hit <strong>Simulate</strong>.</li>
+    </ol>
+
+    <h2>How it works</h2>
+    <p>
+      The calculator runs a two-phase simulation using the community-documented tier-gap penetration model.
+      While the plate holds, each shot deals only the penetrated share of its damage to health, and the blocked
+      share chips armor durability. Once durability hits zero, every shot lands at full damage.
+    </p>
+    <pre class="formula">gap        = ammoTier − armorTier
+pen        = penetration chance by gap  (e.g. same tier ≈ 50%)
+flesh/shot = dmg × (pen + (1 − pen) × 0.30)      → while armor holds
+armor/shot = dmg × (1 − pen) × (1 − 0.30)        → durability drained
+shots      = shotsToBreak + ceil(remaining ÷ dmg) → after armor breaks
+TTK (ms)   = (shots − 1) × 60000 ÷ RPM</pre>
+    <p>
+      This is a model, not leaked game code: the penetration table, blocked-damage share and hit-area
+      multipliers are community estimates that change with patches. The exact numbers are documented on the
+      <a href="/methodology/">methodology page</a> so you can audit every input. What the model gets right —
+      and what matters in raids — is the relationship: tier gap decides kills, and broken plates stop soaking.
+    </p>
+
+    <h2>FAQ</h2>
+    <Faq faqs={faqs} />
+  </section>
+
+  <section class="prose">
+    <h2>Related tools and guides</h2>
+    <div class="cards">
+      <a class="card" href="/ammo-chart/"><span class="ico">🧭</span><h3>Delta Force Ammo Chart</h3><p>Every ammo tier vs every armor tier — penetration at a glance.</p><span class="tag">Chart</span></a>
+      <a class="card" href="/guides/ammo-armor-tiers-explained/"><span class="ico">📘</span><h3>Ammo &amp; Armor Tiers Explained</h3><p>What the six tiers mean and when under-tier ammo is fine.</p><span class="tag">Guide</span></a>
+      <a class="card" href="/loadout-cost-calculator/"><span class="ico">🎒</span><h3>Loadout Cost Calculator</h3><p>Price the kit that fires that ammo before you insure it.</p><span class="tag">Calculator</span></a>
+    </div>
+  </section>
+
+  <TrustBlock tool="TTK Calculator" />
+</Base>
+
+<script>
+  import { penChance, BLOCKED_DAMAGE_SHARE, DEFAULTS } from '../data/game';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const num = (id: string, fallback = 0) => {
+    const v = parseFloat($(id)?.value);
+    return Number.isFinite(v) ? v : fallback;
+  };
+  const fmt = (n: number, d = 2) =>
+    Number.isFinite(n) ? new Intl.NumberFormat('en-US', { maximumFractionDigits: d }).format(n) : '—';
+
+  function simulate(dmg: number, rpm: number, pen: number, armorHp: number, bodyHp: number) {
+    const fleshPerShot = dmg * (pen + (1 - pen) * BLOCKED_DAMAGE_SHARE);
+    const armorDrain = dmg * (1 - pen) * (1 - BLOCKED_DAMAGE_SHARE);
+    let shots: number;
+    let breakShot: number | null = null;
+    if (armorHp > 0 && armorDrain > 0) {
+      const toBreak = Math.ceil(armorHp / armorDrain);
+      if (toBreak * fleshPerShot >= bodyHp) {
+        shots = Math.ceil(bodyHp / fleshPerShot);
+      } else {
+        breakShot = toBreak + 1;
+        const remaining = bodyHp - toBreak * fleshPerShot;
+        shots = toBreak + Math.ceil(remaining / dmg);
+      }
+    } else {
+      shots = Math.ceil(bodyHp / dmg);
+    }
+    const ttk = Math.max(0, (shots - 1)) * (60000 / rpm);
+    return { shots, ttk, breakShot, fleshPerShot };
+  }
+
+  function computeTTK() {
+    const dmg = num('dmg'), rpm = num('rpm', 600);
+    const ammoTier = parseInt($('ammo').value, 10);
+    const armorTier = parseInt($('armor').value, 10);
+    const armorHp = armorTier === 0 ? 0 : num('armorhp', DEFAULTS.armorDurability);
+    const bodyHp = num('bodyhp', DEFAULTS.bodyHp) || DEFAULTS.bodyHp;
+    const mult = parseFloat($('area').value) || 1;
+    const falloff = Math.min(100, Math.max(10, num('falloff', 100))) / 100;
+    if (!(dmg > 0) || !(rpm > 0) || !(bodyHp > 0)) return;
+
+    const eff = dmg * mult * falloff;
+    const pen = armorTier === 0 ? 1 : penChance(ammoTier, armorTier);
+    const armored = simulate(eff, rpm, pen, armorHp, bodyHp);
+    const naked = simulate(eff, rpm, 1, 0, bodyHp);
+    const penalty = naked.ttk > 0 ? ((armored.ttk / naked.ttk - 1) * 100) : 0;
+
+    const armorLine =
+      armorTier === 0
+        ? `<div class="row"><span>Armor</span><b>None — full damage per shot</b></div>`
+        : `<div class="row"><span>Penetration vs Tier ${armorTier}</span><b>${fmt(pen * 100, 0)}% of shots</b></div>
+           <div class="row"><span>Damage reaching health (per shot, armored)</span><b>${fmt(armored.fleshPerShot, 1)}</b></div>
+           ${armored.breakShot ? `<div class="row"><span>Armor breaks on shot</span><b>#${armored.breakShot}</b></div>` : `<div class="row"><span>Armor</span><b>Survives the kill</b></div>`}`;
+
+    const el = document.getElementById('result')!;
+    el.innerHTML = `
+      <div class="stats">
+        <div class="stat"><span class="k">Shots to kill</span><span class="v">${fmt(armored.shots, 0)}</span></div>
+        <div class="stat"><span class="k">TTK (armored)</span><span class="v">${fmt(armored.ttk, 0)} ms</span></div>
+        <div class="stat"><span class="k">TTK (no armor)</span><span class="v">${fmt(naked.ttk, 0)} ms</span></div>
+        <div class="stat"><span class="k">Armor TTK penalty</span><span class="v">+${fmt(penalty, 0)}%</span></div>
+      </div>
+      <div class="rows">${armorLine}
+        <div class="row"><span>Bullets fired per mag used</span><b>${fmt(armored.shots, 0)}</b></div>
+      </div>
+      <p class="note">Model inputs (pen table, blocked share 30%, hit multipliers) are community estimates — see <a href="/methodology/">methodology</a>. Verify against the current patch before trusting edge cases.</p>`;
+    (window as any).computeTTK = computeTTK;
+  }
+
+  function loadExample() {
+    const set = (id: string, v: string) => { ($ as any)(id).value = v; };
+    set('dmg', '42'); set('rpm', '700');
+    ($('ammo') as HTMLSelectElement).value = '4';
+    ($('armor') as HTMLSelectElement).value = '4';
+    set('armorhp', '50'); set('bodyhp', '100');
+    ($('area') as HTMLSelectElement).value = '1';
+    set('falloff', '90');
+    computeTTK();
+  }
+
+  (window as any).computeTTK = computeTTK;
+  (window as any).loadExample = loadExample;
+  document.getElementById('ttk')?.addEventListener('input', computeTTK);
+  computeTTK();
+</script>

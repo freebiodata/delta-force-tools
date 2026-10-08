@@ -1,0 +1,89 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+
+const title = 'How TTK Works in Delta Force – Formula | DF TOOLS';
+const description =
+  'How time-to-kill works in Delta Force: the TTK formula, how ammo and armor tiers change shots-to-kill, and worked examples you can reproduce in our calculator.';
+const updated = '2026-10-08';
+
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'How TTK works in Delta Force',
+  datePublished: '2026-10-08',
+  dateModified: updated,
+  author: { '@type': 'Organization', name: 'DF TOOLS' },
+  publisher: { '@type': 'Organization', name: 'DF TOOLS' },
+};
+---
+
+<Base title={title} description={description} schema={[articleLd]}>
+  <Breadcrumbs items={[{ name: 'Guides' }, { name: 'How TTK Works' }]} />
+  <div class="page-head">
+    <h1>How TTK works in Delta Force</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">
+      Time-to-kill looks like a simple division — until armor gets involved. Here is the full chain: fire rate to
+      bullet interval, damage to shots-to-kill, and the tier-gap model that decides how much of your damage a
+      plate actually eats.
+    </p>
+    <div class="microline"><span>By DF TOOLS</span><span>Updated {updated}</span></div>
+  </div>
+
+  <section class="prose">
+    <h2>Quick answer</h2>
+    <p>
+      TTK = (shots to kill − 1) × 60,000 ÷ fire rate in RPM. Shots to kill is your target's health divided by the
+      damage each shot deals after armor — and against armor, "damage after armor" depends on your ammo tier
+      versus the target's armor tier, not just the number on the gun.
+    </p>
+    <div class="hazard">Do it now: run your exact gun through the <a href="/ttk-calculator/">TTK calculator</a> while you read.</div>
+
+    <h2>Step 1 — fire rate to bullet interval</h2>
+    <p>A gun firing 700 RPM puts a bullet in the air every 85.7 milliseconds:</p>
+    <pre class="formula">interval (ms) = 60,000 ÷ RPM</pre>
+    <p>The first shot is free — it happens the instant you press the button — which is why the formula subtracts one interval.</p>
+
+    <h2>Step 2 — damage to shots-to-kill</h2>
+    <pre class="formula">shots = ceil(health ÷ damage per shot)</pre>
+    <p>Unarmored, that's the whole story: a 42-damage gun needs 3 shots on a 100-health operator. Armored, the damage per shot collapses:</p>
+    <pre class="formula">damage per shot = dmg × (pen + (1 − pen) × blockedShare)</pre>
+    <p>Where <code>pen</code> is the penetration chance from the ammo-vs-armor tier gap, and <code>blockedShare</code> is the slice of a blocked shot that still hurts (community estimate ≈ 30%). Same 42-damage gun with same-tier ammo: about 29 damage per shot reaches health — 4 shots instead of 3, and that assumes a fresh plate.</p>
+
+    <h2>Step 3 — the plate is a second health bar</h2>
+    <p>
+      Blocked damage chips armor durability. A 50-point plate dies to a stream of blocked shots, and after it
+      breaks, every bullet lands at full damage. That's why TTK against armor is a two-phase problem, and why a
+      "half-dead" plate changes fights: the <a href="/ttk-calculator/">calculator</a> reports the exact shot on
+      which armor breaks.
+    </p>
+
+    <h2>Worked example</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Scenario</th><th>Shots</th><th>TTK @ 700 RPM</th></tr></thead>
+        <tbody>
+          <tr><td>42 dmg, no armor</td><td class="mono">3</td><td class="mono">171 ms</td></tr>
+          <tr><td>42 dmg vs same-tier armor, 50 durability</td><td class="mono">4–5</td><td class="mono">257–343 ms</td></tr>
+          <tr><td>42 dmg, ammo 2 tiers under</td><td class="mono">6+</td><td class="mono">429+ ms</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Illustrative values from the tier-gap model — reproduce them with your own inputs on the <a href="/ttk-calculator/">TTK calculator</a>.</p>
+
+    <h2>What TTK doesn't tell you</h2>
+    <ul>
+      <li><strong>First-shot reliability</strong> — a 171 ms TTK means nothing if the first two shots miss.</li>
+      <li><strong>Range</strong> — falloff lowers damage; enter a reduced "damage at range" percentage in the calculator.</li>
+      <li><strong>Aim trajectory</strong> — headshot multipliers end fights faster than any RPM number; multipliers are input-controlled in the tool because they vary by helmet and ammo.</li>
+    </ul>
+
+    <h2>Sources and verification</h2>
+    <p>
+      The tier-gap model and its rebalance history are community-documented; our standing assumptions, with
+      sources and the [VERIFY] policy, live on the <a href="/methodology/">methodology page</a>. Game patches
+      change these values — always check the review date before quoting numbers in an argument.
+    </p>
+  </section>
+</Base>

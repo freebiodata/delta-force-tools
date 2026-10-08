@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { lastVerified } from '../data/game';
+
+const title = 'All Delta Force Tools & Calculators | DF TOOLS';
+const description =
+  'Every DF TOOLS Delta Force tool in one place: TTK calculator, ammo chart, extraction profit and loadout cost calculators — free, no sign-up, client-side.';
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs items={[{ name: 'Tools' }]} />
+  <div class="page-head">
+    <h1>All Delta Force tools</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">
+      Four tools covering the three questions every raid starts with: what kills what, what it costs, and what it
+      pays. All free, all client-side, mechanics data reviewed {lastVerified}.
+    </p>
+  </div>
+
+  <div class="cards">
+    <a class="card" href="/ttk-calculator/"><span class="ico">🎯</span><h3>TTK Calculator</h3><p>Simulate shots-to-kill and TTK against any armor tier, durability included.</p><span class="tag">Flagship</span></a>
+    <a class="card" href="/ammo-chart/"><span class="ico">🧭</span><h3>Ammo Chart</h3><p>The full ammo-vs-armor penetration grid plus a caliber starter reference.</p><span class="tag">Chart</span></a>
+    <a class="card" href="/extraction-profit-calculator/"><span class="ico">💰</span><h3>Extraction Profit Calculator</h3><p>Expected value per raid, break-even loot, death-loss math.</p><span class="tag">Calculator</span></a>
+    <a class="card" href="/loadout-cost-calculator/"><span class="ico">🎒</span><h3>Loadout Cost Calculator</h3><p>Total kit price with ammo-per-mag math and a budget verdict.</p><span class="tag">Calculator</span></a>
+  </div>
+
+  <section class="prose">
+    <h2>Guides that feed the tools</h2>
+    <ul>
+      <li><a href="/guides/how-ttk-works/">How TTK works in Delta Force</a> — the formula, the tier model, worked examples.</li>
+      <li><a href="/guides/ammo-armor-tiers-explained/">Ammo &amp; armor tiers explained</a> — what Tier 1–6 means in practice.</li>
+      <li><a href="/guides/extraction-profit-guide/">Raid profit basics</a> — the five numbers behind every profitable raid.</li>
+    </ul>
+  </section>
+</Base>

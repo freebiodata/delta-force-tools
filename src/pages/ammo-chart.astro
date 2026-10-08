@@ -1,0 +1,123 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import TrustBlock from '../components/TrustBlock.astro';
+import ToolSchema from '../components/ToolSchema.astro';
+import Faq from '../components/Faq.astro';
+import { TIERS, CALIBERS, penChance, lastVerified } from '../data/game';
+
+const title = 'Delta Force Ammo Chart – Tiers vs Armor | DF TOOLS';
+const description =
+  'Delta Force ammo chart: penetration chance of every ammo tier against every armor tier, plus a caliber starter reference. Updated for the current penetration model and free to use.';
+
+const faqs = [
+  {
+    q: 'What do ammo tiers mean in Delta Force?',
+    a: 'Every round has a penetration tier from 1 to 6. The tier decides how the bullet performs against armor of each level: fire at or above the plate\'s tier and a large share of bullets punch through for full damage; fire two or more tiers under and most of your damage is soaked by the plate.',
+  },
+  {
+    q: 'Which armor tier should I assume my enemy has?',
+    a: 'In loot-based raids, assume mid tiers (3–4) are common and top tiers appear in high-risk lobbies. The chart\'s whole row grid exists so you can check your ammo against several likely armor levels before committing.',
+  },
+  {
+    q: 'Is higher-tier ammo always worth the cost?',
+    a: 'Not always. Against unarmored or low-tier targets, premium ammo wastes money, and TTK barely changes. Use the <a href="/ttk-calculator/">TTK calculator</a> to see where the extra cost actually changes shots-to-kill.',
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs items={[{ name: 'Ammo Chart' }]} />
+  <ToolSchema tool="Delta Force Ammo Chart" description={description} />
+
+  <div class="page-head">
+    <h1>Delta Force Ammo Chart</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">
+      One grid, every matchup: how much of your damage gets through each armor tier, ammo tier by ammo tier.
+      Built on the community-documented tier-gap penetration model and refreshed on every patch review.
+    </p>
+    <div class="microline"><span>Free</span><span>No sign-up</span><span>Data reviewed {lastVerified}</span></div>
+  </div>
+
+  <section class="prose">
+    <h2>Penetration chance: ammo tier vs armor tier</h2>
+    <p>
+      Read your ammo tier in the left column, the enemy's armor tier across the top — the cell is the share of
+      shots that penetrate for full damage. Values follow the post-rebalance model; see
+      <a href="/methodology/">methodology</a> for sources and the [VERIFY] policy.
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Ammo ↓ / Armor →</th>
+            {TIERS.map((t) => <th scope="col">Tier {t.tier}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {TIERS.map((a) => (
+            <tr>
+              <th scope="row"><span class={`pill t${a.tier}`}>{a.name}</span></th>
+              {TIERS.map((armor) => {
+                const p = penChance(a.tier, armor.tier);
+                const cls = p >= 0.75 ? 'good' : p >= 0.25 ? 'warn' : 'poor';
+                return <td class="mono"><span class={cls}>{Math.round(p * 100)}%</span></td>;
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      Penetration chance = share of shots dealing full damage. Blocked shots still deal a reduced share of
+      damage and chip armor durability — the <a href="/ttk-calculator/">TTK calculator</a> models both phases.
+    </p>
+  </section>
+
+  <section class="prose">
+    <h2>Caliber starter reference</h2>
+    <p>
+      Where each caliber usually sits. Damage numbers change per ammo type inside a caliber, so treat the tier
+      ranges as typical loadout guidance, not gospel.
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th scope="col">Caliber</th><th scope="col">Typical role</th><th scope="col">Common tiers</th><th scope="col">Notes</th></tr>
+        </thead>
+        <tbody>
+          {CALIBERS.map((c) => (
+            <tr>
+              <td class="mono">{c.caliber}</td>
+              <td>{c.role}</td>
+              <td class="mono">{c.exampleTier}</td>
+              <td style="white-space:normal">{c.notes}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <div class="hazard">
+      [VERIFY] This starter table ships with placeholder guidance, not verified patch data. Confirm each caliber's
+      current ammo tiers and damage values in-game before relying on it — then send corrections via the
+      <a href="/contact/">contact page</a> so every operator gets the fix.
+    </div>
+  </section>
+
+  <section class="prose">
+    <h2>FAQ</h2>
+    <Faq faqs={faqs} />
+  </section>
+
+  <section class="prose">
+    <h2>Related tools and guides</h2>
+    <div class="cards">
+      <a class="card" href="/ttk-calculator/"><span class="ico">🎯</span><h3>TTK Calculator</h3><p>Turn the chart into exact shots-to-kill for your gun.</p><span class="tag">Calculator</span></a>
+      <a class="card" href="/guides/ammo-armor-tiers-explained/"><span class="ico">📘</span><h3>Ammo &amp; Armor Tiers Explained</h3><p>The tier system, and when budget ammo is the right call.</p><span class="tag">Guide</span></a>
+      <a class="card" href="/extraction-profit-calculator/"><span class="ico">💰</span><h3>Extraction Profit Calculator</h3><p>Check the run pays for premium ammo before you queue.</p><span class="tag">Calculator</span></a>
+    </div>
+  </section>
+
+  <TrustBlock tool="Ammo Chart" />
+</Base>

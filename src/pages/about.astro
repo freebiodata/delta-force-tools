@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE } from '../data/game';
+
+const title = 'About DF TOOLS – Free Delta Force Calculators';
+const description =
+  'Who builds DF TOOLS, why it exists, how the tools are made and kept current, and how the site is funded. An unofficial, ad-free Delta Force toolkit.';
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs items={[{ name: 'About' }]} />
+  <div class="page-head">
+    <h1>About DF TOOLS</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">Why this site exists, how it's built, and how it stays honest.</p>
+  </div>
+
+  <section class="prose">
+    <h2>Why we built this</h2>
+    <p>
+      Delta Force players do real math every night — ammo tier vs armor tier, kit cost vs loot rate — and the
+      community's answers lived in Reddit charts, spreadsheets and dead links. DF TOOLS puts that math into
+      fast, free, no-nonsense tools: <a href="/ttk-calculator/">TTK simulator</a>,{' '}
+      <a href="/ammo-chart/">ammo chart</a>, <a href="/extraction-profit-calculator/">raid profit</a> and{' '}
+      <a href="/loadout-cost-calculator/">loadout cost</a> calculators.
+    </p>
+
+    <h2>How the tools are built</h2>
+    <ul>
+      <li>Every calculation runs client-side in your browser. Nothing you type is uploaded — see <a href="/privacy/">privacy</a>.</li>
+      <li>Game mechanics are modeled from community-documented sources, and every assumption is listed on the <a href="/methodology/">methodology page</a>.</li>
+      <li>Data is re-reviewed after notable patches; the review date appears on every tool page.</li>
+    </ul>
+
+    <h2>How the site is funded</h2>
+    <p>
+      Currently: out of pocket, no ads, no affiliate links, no paywall. If funding is ever added (sponsorships,
+      optional supporter perks), it will be disclosed on this page — plainly, before you see it anywhere else.
+    </p>
+
+    <h2>Who is behind it</h2>
+    <p>
+      DF TOOLS is maintained by an independent fan of extraction shooters. <!-- [NEEDS DATA]: replace with your
+      name/bio/photo before publishing — real people build real trust. --> Details on the operator and review
+      process: <a href="/methodology/">methodology</a>. Corrections and data updates:
+      <a href="/contact/">contact</a>.
+    </p>
+
+    <h2>Affiliation notice</h2>
+    <p>{SITE.disclaimer}</p>
+  </section>
+</Base>

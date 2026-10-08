@@ -1,0 +1,83 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE, lastVerified } from '../data/game';
+
+const title = 'Free Delta Force Calculators – TTK, Ammo, Profit | DF TOOLS';
+const description =
+  'Free Delta Force tools: TTK calculator with armor simulation, ammo chart, extraction profit and loadout cost calculators. No sign-up, no ads, runs in your browser.';
+
+const websiteLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.brand,
+  url: Astro.site?.toString(),
+  description,
+};
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE.brand,
+  url: Astro.site?.toString(),
+  description: 'Unofficial fan-made calculators and tools for Delta Force players.',
+};
+---
+
+<Base title={title} description={description} schema={[websiteLd, orgLd]}>
+  <section class="hero">
+    <p class="kicker">Unofficial toolkit // patch-reviewed {lastVerified}</p>
+    <h1>Delta Force calculators that answer the raid-day questions.</h1>
+    <p class="sub">
+      Will this ammo kill that plate? Will this kit pay for itself? Free, instant, no sign-up — every number is
+      computed in your browser.
+    </p>
+    <div class="hazard">
+      Built because the good TTK charts lived in Reddit posts. All mechanics data is community-modelled and
+      patch-checked — <a href="/methodology/">see exactly what we assume</a>.
+    </div>
+  </section>
+
+  <section aria-labelledby="tools-h">
+    <h2 id="tools-h">The toolkit</h2>
+    <div class="cards">
+      <a class="card" href="/ttk-calculator/"><span class="ico">🎯</span><h3>TTK Calculator</h3><p>Shots-to-kill and time-to-kill vs any armor tier, with armor durability and hit area.</p><span class="tag">Flagship</span></a>
+      <a class="card" href="/ammo-chart/"><span class="ico">🧭</span><h3>Ammo Chart</h3><p>Every ammo tier vs every armor tier — the whole penetration grid on one page.</p><span class="tag">Chart</span></a>
+      <a class="card" href="/extraction-profit-calculator/"><span class="ico">💰</span><h3>Extraction Profit</h3><p>Expected value per raid with insurance and your real extraction rate.</p><span class="tag">Calculator</span></a>
+      <a class="card" href="/loadout-cost-calculator/"><span class="ico">🎒</span><h3>Loadout Cost</h3><p>Line-by-line kit pricing with a budget verdict before you deploy.</p><span class="tag">Calculator</span></a>
+    </div>
+  </section>
+
+  <section class="prose" aria-labelledby="chooser-h">
+    <h2 id="chooser-h">Which tool do I need?</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Your question</th><th scope="col">Use</th></tr></thead>
+        <tbody>
+          <tr><td>"Can my gun kill a Tier 4 plate before I reload?"</td><td><a href="/ttk-calculator/">TTK Calculator</a></td></tr>
+          <tr><td>"Is this ammo tier good enough for tonight's lobbies?"</td><td><a href="/ammo-chart/">Ammo Chart</a></td></tr>
+          <tr><td>"Am I actually making money per raid?"</td><td><a href="/extraction-profit-calculator/">Extraction Profit</a></td></tr>
+          <tr><td>"Why is my balance always empty after deploy?"</td><td><a href="/loadout-cost-calculator/">Loadout Cost</a></td></tr>
+          <tr><td>"I don't understand the tier system at all."</td><td><a href="/guides/ammo-armor-tiers-explained/">Ammo &amp; armor tiers explained</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="prose" aria-labelledby="why-h">
+    <h2 id="why-h">Why DF TOOLS</h2>
+    <ul>
+      <li><strong>No ads, no account, no paywall.</strong> The tools are the product — not you.</li>
+      <li><strong>Everything runs in your browser.</strong> No uploads, no tracking pixels, works on mobile data.</li>
+      <li><strong>Patch-reviewed data policy.</strong> Every game number carries its last-reviewed date, and the <a href="/methodology/">methodology page</a> shows every formula and assumption.</li>
+      <li><strong>Honest about uncertainty.</strong> Where a value is a community estimate, we label it [VERIFY] instead of pretending it's official.</li>
+    </ul>
+  </section>
+
+  <section class="prose" aria-labelledby="learn-h">
+    <h2 id="learn-h">Learn the numbers</h2>
+    <div class="cards">
+      <a class="card" href="/guides/how-ttk-works/"><span class="ico">📘</span><h3>How TTK works</h3><p>The formula behind time-to-kill, with worked examples.</p><span class="tag">Guide</span></a>
+      <a class="card" href="/guides/ammo-armor-tiers-explained/"><span class="ico">📗</span><h3>Ammo &amp; armor tiers explained</h3><p>Six tiers, one grid — when under-tier ammo is fine.</p><span class="tag">Guide</span></a>
+      <a class="card" href="/guides/extraction-profit-guide/"><span class="ico">📙</span><h3>Raid profit basics</h3><p>The five numbers that decide if a raid was worth it.</p><span class="tag">Guide</span></a>
+    </div>
+  </section>
+</Base>

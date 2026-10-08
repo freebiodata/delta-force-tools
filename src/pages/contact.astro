@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+const title = 'Contact DF TOOLS – Report a Data Error';
+const description =
+  'Contact DF TOOLS: report wrong values, request a tool or a data update, or ask about the methodology. We read everything.';
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs items={[{ name: 'Contact' }]} />
+  <div class="page-head">
+    <h1>Contact</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">
+      Wrong value in the chart? Tool behaving oddly? Patch changed the meta? Tell us — data corrections are the
+      most valuable thing this site receives.
+    </p>
+  </div>
+
+  <section class="prose">
+    <h2>Email</h2>
+    <p>
+      <strong>hello@deltaforcetools.top</strong><br />
+      <!-- [NEEDS DATA]: set up this mailbox (e.g. via your domain's email forwarding) before launch. -->
+      Typical response time: a few days. Include the page URL and, for data reports, the patch number you tested on.
+    </p>
+
+    <h2>What to include in a data report</h2>
+    <ol class="steps">
+      <li>The page and the exact value you think is wrong (e.g. "TTK calculator, same-tier penetration").</li>
+      <li>How you tested it — in-game test, patch notes, datamine, community source.</li>
+      <li>The patch version you observed it on.</li>
+    </ol>
+
+    <h2>Requests</h2>
+    <p>
+      Tool ideas are welcome — especially ones that need math you keep doing by hand. The roadmap lives on the{' '}
+      <a href="/changelog/">changelog</a>; anything listed as "planned" is already queued.
+    </p>
+  </section>
+</Base>

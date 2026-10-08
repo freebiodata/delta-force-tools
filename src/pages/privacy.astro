@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE } from '../data/game';
+
+const title = 'Privacy Policy | DF TOOLS';
+const description =
+  'DF TOOLS privacy policy in plain language: the calculators run entirely in your browser, nothing you type is uploaded, and the site sets no tracking cookies.';
+const updated = '2026-10-08';
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs items={[{ name: 'Privacy' }]} />
+  <div class="page-head">
+    <h1>Privacy policy</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">Plain language, because the honest version is short.</p>
+  </div>
+
+  <section class="prose">
+    <p class="note">Last updated: {updated}</p>
+
+    <h2>The short version</h2>
+    <ul>
+      <li>All calculators run in your browser. <strong>Nothing you type is sent to any server</strong> — there is no backend to send it to.</li>
+      <li>This site sets <strong>no advertising or tracking cookies</strong> and loads no analytics by default.</li>
+      <li>No accounts exist. No emails are collected unless you write to us first.</li>
+    </ul>
+
+    <h2>What is processed, and where</h2>
+    <p>
+      Numbers you enter into the <a href="/ttk-calculator/">TTK calculator</a>,{' '}
+      <a href="/ammo-chart/">ammo chart</a>, <a href="/extraction-profit-calculator/">profit</a> and{' '}
+      <a href="/loadout-cost-calculator/">loadout</a> tools are read by JavaScript in your browser to compute
+      results. That data never leaves your device and is forgotten when you close the tab.
+    </p>
+
+    <h2>Third parties</h2>
+    <p>
+      The site loads two fonts from Google Fonts; your browser therefore connects to Google when fetching them.
+      No other third-party requests are made. If analytics are ever added, this page will be updated first, with
+      a dated note in the <a href="/changelog/">changelog</a>.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions about this policy: <a href="/contact/">contact page</a>. {SITE.disclaimer}
+    </p>
+  </section>
+</Base>

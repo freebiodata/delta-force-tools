@@ -1,0 +1,74 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+
+const title = 'Delta Force Money Guide – Raid Profit Basics | DF TOOLS';
+const description =
+  'How to make money in Delta Force raids: the five numbers behind every profitable run, kit budgeting rules, insurance math, and when to run cheap.';
+const updated = '2026-10-08';
+
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Delta Force raid profit basics',
+  datePublished: '2026-10-08',
+  dateModified: updated,
+  author: { '@type': 'Organization', name: 'DF TOOLS' },
+};
+---
+
+<Base title={title} description={description} schema={[articleLd]}>
+  <Breadcrumbs items={[{ name: 'Guides' }, { name: 'Raid Profit Basics' }]} />
+  <div class="page-head">
+    <h1>Raid profit basics</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">
+      Extraction shooters are economy games with guns attached. Five numbers decide whether you're rich or
+      donating: kit cost, loot rate, extraction rate, insurance math, and break-even loot. Here's each one.
+    </p>
+    <div class="microline"><span>By DF TOOLS</span><span>Updated {updated}</span></div>
+  </div>
+
+  <section class="prose">
+    <h2>Quick answer</h2>
+    <p>
+      A raid is worth it when: (your extraction rate × loot per extract) + insurance recovery is greater than
+      full kit cost. If you can't state those three numbers for your last 20 raids, you're gambling, not
+      farming. The <a href="/extraction-profit-calculator/">extraction profit calculator</a> does this math for you.
+    </p>
+
+    <h2>The five numbers</h2>
+    <ol class="steps">
+      <li><strong>Kit cost.</strong> Everything you deploy with, ammo included. Price it with the <a href="/loadout-cost-calculator/">loadout calculator</a> — most players underestimate ammo by half.</li>
+      <li><strong>Loot per successful extract.</strong> Not your best raid — your average. Chasing one big score hides twenty -30k runs.</li>
+      <li><strong>Extraction rate.</strong> From your profile stats. This single number swings expected value more than any gun upgrade.</li>
+      <li><strong>Insurance recovery.</strong> Premium times chance your insured kit returns. It pays out on deaths too — that's the entire point.</li>
+      <li><strong>Break-even loot.</strong> The loot you must extract with, on average, before profit starts. Know it per kit.</li>
+    </ol>
+
+    <h2>Worked example</h2>
+    <pre class="formula">kit            = 60k gear + 8k ammo + 6k meds + 4k insurance = 78k
+recovery       = 70% × 68k insured        = +47.6k (even on death)
+EV @ 55% rate  = 0.55 × loot + 47.6k − 78k
+break-even     = loot where EV = 0        ≈ 55k per extract</pre>
+    <p>
+      Read that again: at a 55% extraction rate you need ~55k average loot just to break even on a 78k kit.
+      Either extract more, loot better, or run cheaper — the calculator tells you which lever matters.
+    </p>
+
+    <h2>Budget rules that actually help</h2>
+    <ul>
+      <li><strong>Match kit to lobby, not to ego.</strong> Mid-tier plates and 1-below ammo win most raids; premium ammo is for confirmed top-tier lobbies.</li>
+      <li><strong>Ammo ≤ ~35% of kit cost.</strong> Above that, you're over-tiered for what you'll meet — check the <a href="/ammo-chart/">ammo chart</a>.</li>
+      <li><strong>Insurance is a tool, not a tax.</strong> Insure expensive, recoverable gear; don't insure the meds you'll drink anyway.</li>
+      <li><strong>Quest items are worth more than their price.</strong> Add their "progress value" to loot when a run finishes an objective.</li>
+    </ul>
+
+    <h2>When to run cheap</h2>
+    <p>
+      New map rotation, new patch (meta unsettled), tilted after two deaths, or grinding low-risk objectives —
+      those are scav-tier nights. The best farmers treat budget kits as a weapon: a 25k kit that extracts twice
+      beats an 80k kit that extracts once.
+    </p>
+  </section>
+</Base>

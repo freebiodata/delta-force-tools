@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+const title = 'Changelog – What\'s New | DF TOOLS';
+const description =
+  'Every real update to DF TOOLS: new tools, data reviews after patches, and fixes. Dated and honest, newest first.';
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs items={[{ name: 'Changelog' }]} />
+  <div class="page-head">
+    <h1>Changelog</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">Every real change to the site and its data, newest first. No silent edits.</p>
+  </div>
+
+  <section class="prose">
+    <h2>2026-10-08 — Launch</h2>
+    <ul>
+      <li>Shipped four tools: <a href="/ttk-calculator/">TTK calculator</a>, <a href="/ammo-chart/">ammo chart</a>, <a href="/extraction-profit-calculator/">extraction profit</a>, <a href="/loadout-cost-calculator/">loadout cost</a>.</li>
+      <li>Mechanics data initialized from community sources; tier-gap penetration table marked [VERIFY] pending first patch-day review — see <a href="/methodology/">methodology</a>.</li>
+      <li>Published three guides: <a href="/guides/how-ttk-works/">how TTK works</a>, <a href="/guides/ammo-armor-tiers-explained/">ammo &amp; armor tiers</a>, <a href="/guides/extraction-profit-guide/">raid profit basics</a>.</li>
+    </ul>
+
+    <h2>Planned</h2>
+    <ul>
+      <li>Patch-day data review workflow: verify penetration table and caliber tiers after each season change.</li>
+      <li>Community-requested tools — propose one via the <a href="/contact/">contact page</a>.</li>
+    </ul>
+  </section>
+</Base>

@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+
+const title = 'Page Not Found (404) | DF TOOLS';
+const description = 'That page does not exist. Head back to the Delta Force toolkit.';
+---
+
+<Base title={title} description={description}>
+  <div class="hero" style="padding-bottom:20px">
+    <p class="kicker">Error 404 // target not found</p>
+    <h1>Lost in the raid zone.</h1>
+    <p class="sub">This page doesn't exist — but the toolkit does.</p>
+  </div>
+  <div class="cards">
+    <a class="card" href="/ttk-calculator/"><span class="ico">🎯</span><h3>TTK Calculator</h3><p>Ammo vs armor, simulated shot by shot.</p></a>
+    <a class="card" href="/ammo-chart/"><span class="ico">🧭</span><h3>Ammo Chart</h3><p>The full penetration grid.</p></a>
+    <a class="card" href="/"><span class="ico">🏠</span><h3>Home</h3><p>Everything, one click away.</p></a>
+  </div>
+</Base>

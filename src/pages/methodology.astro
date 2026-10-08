@@ -1,0 +1,106 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { lastVerified } from '../data/game';
+
+const title = 'Methodology – Formulas & Data Policy | DF TOOLS';
+const description =
+  'How DF TOOLS calculators work: every formula, the community-documented tier-gap model, data sources, the [VERIFY] policy, AI-assist disclosure and update schedule.';
+
+const sources = [
+  {
+    label: 'Delta Force ammo & armor penetration guide (tier-gap overview)',
+    url: 'https://timesaver.gg/blog/delta-force-ammo-armor-penetration-guide',
+  },
+  {
+    label: 'How armor and bullet damage work in Delta Force (six armor levels)',
+    url: 'https://www.thegamer.com/delta-force-ammo-armor-system-explained',
+  },
+  {
+    label: 'r/DeltaForceGlobal — community discussion of ammo tiers and penetration changes',
+    url: 'https://www.reddit.com/r/DeltaForceGlobal/comments/1enfg8t/are_armor_penetratingammo_types_too_much',
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs items={[{ name: 'Methodology' }]} />
+  <div class="page-head">
+    <h1>Methodology &amp; data policy</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">
+      Every formula, every assumption, every source — in the open. If a number on this site can't be traced to
+      this page, treat it as a bug and <a href="/contact/">report it</a>.
+    </p>
+  </div>
+
+  <section class="prose">
+    <h2>The tier-gap penetration model</h2>
+    <p>
+      Delta Force gives ammo and armor tiers from 1 to 6. The gap between them decides the share of shots that
+      penetrate for full damage. Community testing after the penetration rebalance reports: same tier ≈ 50%
+      penetration, +1 tier ≈ 75%, +2 tiers ≈ 90–100%, and steep drop-offs below. Our default table:
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Ammo − Armor gap</th><th>Penetration chance (default)</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">+3 or more</td><td class="mono">100%</td></tr>
+          <tr><td class="mono">+2</td><td class="mono">90%</td></tr>
+          <tr><td class="mono">+1</td><td class="mono">75%</td></tr>
+          <tr><td class="mono">0 (same tier)</td><td class="mono">50%</td></tr>
+          <tr><td class="mono">−1</td><td class="mono">25%</td></tr>
+          <tr><td class="mono">−2</td><td class="mono">10%</td></tr>
+          <tr><td class="mono">−3 or less</td><td class="mono">5%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>These values are community estimates [VERIFY], not official numbers.</strong> The publisher does not document exact penetration curves, and patches change them. Blocked shots deal an assumed 30% of their damage to health [VERIFY] and drain armor durability by the remainder.</p>
+
+    <h2>TTK simulation</h2>
+    <pre class="formula">flesh/shot (armored) = dmg × (pen + (1 − pen) × 0.30)
+armor/shot           = dmg × (1 − pen) × 0.70
+shots to break       = ceil(durability ÷ armor/shot)
+total shots          = phase math until health ≤ 0
+TTK (ms)             = (shots − 1) × 60000 ÷ RPM</pre>
+    <p>Hit-area multipliers (chest ×1.0, head ×2.0, limbs ×0.9) are editable inputs because they vary by equipment and are not officially published. Damage falloff is user-supplied as a percentage.</p>
+
+    <h2>Profit model</h2>
+    <pre class="formula">EV = extractionRate × loot + insuranceRate × insuredKit − kitCost
+break-even loot = (kitCost − insuranceRate × insuredKit) ÷ extractionRate</pre>
+    <p>Assumes gear+ammo are the insured kit; meds are consumed regardless; insurance returns apply whether you extract or die.</p>
+
+    <h2>Sources</h2>
+    <ul>
+      {sources.map((s) => (
+        <li><a href={s.url} rel="noopener nofollow" target="_blank">{s.label}</a></li>
+      ))}
+    </ul>
+    <p class="note">Community sources move; if a link dies or a value changed with a patch, that's a <a href="/contact/">report</a>, not a surprise.</p>
+
+    <h2>The [VERIFY] policy</h2>
+    <p>
+      Every game value in our data files carries a verification flag and the whole dataset carries a review date
+      (currently <span class="mono">{lastVerified}</span>). Values marked [VERIFY] are structured placeholders:
+      the tools work, the defaults need patch-day confirmation. We would rather label uncertainty than present a
+      guessed number as fact.
+    </p>
+
+    <h2>How updates happen</h2>
+    <ul>
+      <li><strong>Trigger:</strong> notable patches, season changes, or community reports.</li>
+      <li><strong>Process:</strong> re-check sources → update the single data file → review date changes → note in the <a href="/changelog/">changelog</a>.</li>
+      <li><strong>All tools read one data file</strong>, so a fix updates the TTK calculator and the ammo chart together.</li>
+    </ul>
+
+    <h2>AI-assist disclosure</h2>
+    <p>
+      Pages were drafted with AI assistance and reviewed by the site operator before publishing. Calculations are
+      deterministic code you can audit — the client-side source is readable, and no number on this site comes
+      from a language model's "memory" of game data.
+    </p>
+
+    <h2>How to report an error</h2>
+    <p>Use <a href="/contact/">the contact page</a> with the page URL, the value, your test method and the patch number. Corrections that check out ship with a changelog credit to the reporting operator's handle (if they want one).</p>
+  </section>
+</Base>

@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE } from '../data/game';
+
+const title = 'Terms of Use | DF TOOLS';
+const description =
+  "Terms of use for DF TOOLS: free unofficial Delta Force tools provided as-is, with no warranty of accuracy. Fan project, not affiliated with the game's publisher.";
+const updated = '2026-10-08';
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs items={[{ name: 'Terms' }]} />
+  <div class="page-head">
+    <h1>Terms of use</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">The deal is simple, and it's on the tin.</p>
+  </div>
+
+  <section class="prose">
+    <p class="note">Last updated: {updated}</p>
+
+    <h2>What this site is</h2>
+    <p>
+      {SITE.brand} is a free, unofficial fan toolkit for the game Delta Force. It is not affiliated with,
+      endorsed by, or connected to TiMi Studio Group, Team Jade, or Tencent. "Delta Force" and all related marks
+      are the property of their respective owners.
+    </p>
+
+    <h2>Accuracy — read this part</h2>
+    <p>
+      Tools are provided <strong>as is, with no warranty of accuracy</strong>. Game mechanics are modeled from
+      community-documented sources and estimates; patches change values without notice. Verify anything that
+      matters before relying on it, and treat results as decision support — not official game data.
+    </p>
+
+    <h2>Acceptable use</h2>
+    <ul>
+      <li>Use the tools freely, personally. Don't resell them or present them as your own product.</li>
+      <li>Don't attempt to overload, scrape abusively, or interfere with the site's operation.</li>
+      <li>Linking to any page is welcome and needs no permission.</li>
+    </ul>
+
+    <h2>Limitation of liability</h2>
+    <p>
+      To the maximum extent permitted by law, the site's operator is not liable for any losses arising from use
+      of the tools — including in-game currency spent on the strength of a calculation. You press deploy; you
+      own the outcome.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      These terms may be updated; material changes get a dated note in the <a href="/changelog/">changelog</a>.
+      Questions: <a href="/contact/">contact</a>.
+    </p>
+  </section>
+</Base>

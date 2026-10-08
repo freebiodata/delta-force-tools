@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+const title = 'HTML Sitemap – All Pages | DF TOOLS';
+const description =
+  'Every page on DF TOOLS: Delta Force calculators, the ammo chart, guides, and site information pages.';
+
+const groups = [
+  {
+    name: 'Tools',
+    links: [
+      ['TTK Calculator', '/ttk-calculator/'],
+      ['Ammo Chart', '/ammo-chart/'],
+      ['Extraction Profit Calculator', '/extraction-profit-calculator/'],
+      ['Loadout Cost Calculator', '/loadout-cost-calculator/'],
+      ['All tools', '/tools/'],
+    ],
+  },
+  {
+    name: 'Guides',
+    links: [
+      ['How TTK Works', '/guides/how-ttk-works/'],
+      ['Ammo & Armor Tiers Explained', '/guides/ammo-armor-tiers-explained/'],
+      ['Raid Profit Basics', '/guides/extraction-profit-guide/'],
+    ],
+  },
+  {
+    name: 'Site',
+    links: [
+      ['Home', '/'],
+      ['About', '/about/'],
+      ['Contact', '/contact/'],
+      ['Methodology', '/methodology/'],
+      ['Changelog', '/changelog/'],
+    ],
+  },
+  {
+    name: 'Legal',
+    links: [
+      ['Privacy Policy', '/privacy/'],
+      ['Terms of Use', '/terms/'],
+    ],
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs items={[{ name: 'Sitemap' }]} />
+  <div class="page-head">
+    <h1>HTML sitemap</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">Every page on DF TOOLS, one click from here.</p>
+  </div>
+  <div class="foot-grid" style="margin:20px 0 40px">
+    {groups.map((g) => (
+      <div>
+        <h4>{g.name}</h4>
+        <ul>
+          {g.links.map(([label, href]) => (
+            <li><a href={href}>{label}</a></li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</Base>

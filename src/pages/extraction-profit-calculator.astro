@@ -1,0 +1,130 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Faq from '../components/Faq.astro';
+import TrustBlock from '../components/TrustBlock.astro';
+import ToolSchema from '../components/ToolSchema.astro';
+
+const title = 'Extraction Profit Calculator – Delta Force | DF TOOLS';
+const description =
+  'Free Delta Force extraction profit calculator: enter loot value, gear cost and insurance to see expected value per raid, break-even loot and whether your run was worth it.';
+
+const faqs = [
+  {
+    q: 'How is expected value per raid calculated?',
+    a: 'EV = (extraction chance × loot) + (insurance recovery chance × insured kit value) − total kit cost, where kit cost includes gear, ammo, meds and the insurance premium. Insurance recovery counts whether you extract or die — that is what you are paying for.',
+  },
+  {
+    q: 'What extraction chance should I use?',
+    a: 'Use your own recent record, not a hopeful guess: check your last 20 raids in your profile stats. Most players overestimate their survival rate; running the calculator with your true rate is the whole point.',
+  },
+  {
+    q: 'Does the calculator include quest item value?',
+    a: 'Not directly. If an item in your bag is a quest objective, add its "worth it to you" value to the loot field — finishing a quest can be worth more than its Koena price.',
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs items={[{ name: 'Tools', href: '/tools/' }, { name: 'Extraction Profit Calculator' }]} />
+  <ToolSchema tool="Delta Force Extraction Profit Calculator" description={description} />
+
+  <div class="page-head">
+    <h1>Extraction Profit Calculator</h1>
+    <div class="h1-bar"></div>
+    <p class="lede">
+      Was that raid actually profitable? Price the full kit, add insurance and your real extraction rate, and get
+      expected value per raid, break-even loot, and a straight answer on whether the loadout pays for itself.
+    </p>
+    <div class="microline"><span>Free</span><span>No sign-up</span><span>Runs in your browser</span></div>
+  </div>
+
+  <form class="tool panel" id="profit" autocomplete="off" onsubmit="return false">
+    <div class="fields">
+      <label class="field"><span>Extracted loot value</span><input id="loot" type="number" value="120000" min="0" step="1000" inputmode="numeric" /><small>Koena in the bag</small></label>
+      <label class="field"><span>Weapon + armor cost</span><input id="gear" type="number" value="60000" min="0" step="1000" inputmode="numeric" /><small>Insured kit</small></label>
+      <label class="field"><span>Ammo cost</span><input id="ammo" type="number" value="8000" min="0" step="500" inputmode="numeric" /></label>
+      <label class="field"><span>Meds + throwables</span><input id="meds" type="number" value="6000" min="0" step="500" inputmode="numeric" /></label>
+      <label class="field"><span>Insurance premium</span><input id="inscost" type="number" value="4000" min="0" step="500" inputmode="numeric" /></label>
+      <label class="field"><span>Insurance recovery chance</span><input id="insrate" type="number" value="70" min="0" max="100" step="1" inputmode="numeric" /><small>% of insured kit returned</small></label>
+      <label class="field"><span>Your extraction rate</span><input id="extrate" type="number" value="55" min="1" max="100" step="1" inputmode="numeric" /><small>From your last raids — be honest</small></label>
+    </div>
+    <button class="btn" type="button" onclick="computeProfit()">Calculate</button>
+  </form>
+
+  <div class="result" id="result" aria-live="polite"></div>
+
+  <section class="prose">
+    <h2>How it works</h2>
+    <pre class="formula">kit cost   = gear + ammo + meds + insurance
+recovery   = insurance rate × (gear + ammo)   → returned even on death
+EV per raid = extraction rate × loot + recovery − kit cost
+break-even loot = (kit cost − recovery) ÷ extraction rate</pre>
+    <p>
+      The model assumes ammo and armor are the insurable kit and meds are consumed either way. If your insurance
+      rules differ, fold the difference into the gear or insurance fields. See <a href="/methodology/">methodology</a>
+      for assumptions and how to audit them.
+    </p>
+
+    <h2>FAQ</h2>
+    <Faq faqs={faqs} />
+  </section>
+
+  <section class="prose">
+    <h2>Related tools and guides</h2>
+    <div class="cards">
+      <a class="card" href="/loadout-cost-calculator/"><span class="ico">🎒</span><h3>Loadout Cost Calculator</h3><p>Price the kit line by line before you queue.</p><span class="tag">Calculator</span></a>
+      <a class="card" href="/guides/extraction-profit-guide/"><span class="ico">📘</span><h3>Raid Profit Basics</h3><p>The five numbers that decide if a raid was worth it.</p><span class="tag">Guide</span></a>
+      <a class="card" href="/ttk-calculator/"><span class="ico">🎯</span><h3>TTK Calculator</h3><p>Win more fights — the other half of profit is surviving them.</p><span class="tag">Calculator</span></a>
+    </div>
+  </section>
+
+  <TrustBlock tool="Extraction Profit Calculator" />
+</Base>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const num = (id: string, fallback = 0) => {
+    const v = parseFloat($(id)?.value);
+    return Number.isFinite(v) ? v : fallback;
+  };
+  const money = (n: number) =>
+    Number.isFinite(n)
+      ? new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(Math.round(n))
+      : '—';
+
+  function computeProfit() {
+    const loot = num('loot'), gear = num('gear'), ammo = num('ammo'), meds = num('meds');
+    const insCost = num('inscost'), insRate = Math.min(100, Math.max(0, num('insrate'))) / 100;
+    const exRate = Math.min(100, Math.max(1, num('extrate', 50))) / 100;
+    const kit = gear + ammo + meds + insCost;
+    const insured = gear + ammo;
+    const recovery = insRate * insured;
+    const ev = exRate * loot + recovery - kit;
+    const breakEven = exRate > 0 ? (kit - recovery) / exRate : NaN;
+    const roiExtract = kit > 0 ? ((loot - kit + recovery) / kit) * 100 : NaN;
+    const lossDeath = kit - recovery;
+
+    const el = document.getElementById('result')!;
+    el.innerHTML = `
+      <div class="stats">
+        <div class="stat"><span class="k">Expected value / raid</span><span class="v">${ev >= 0 ? '+' : ''}${money(ev)}</span></div>
+        <div class="stat"><span class="k">Break-even loot</span><span class="v">${money(breakEven)}</span></div>
+        <div class="stat"><span class="k">Kit cost</span><span class="v">${money(kit)}</span></div>
+        <div class="stat"><span class="k">Loss on death</span><span class="v">−${money(lossDeath)}</span></div>
+      </div>
+      <div class="rows">
+        <div class="row"><span>Insurance recovery (expected)</span><b>+${money(recovery)}</b></div>
+        <div class="row"><span>ROI on a successful extract</span><b class="${roiExtract >= 0 ? 'good' : 'poor'}">${Number.isFinite(roiExtract) ? (roiExtract >= 0 ? '+' : '') + money(roiExtract) + '%' : '—'}</b></div>
+      </div>
+      <div class="verdict ${ev >= 0 ? 'ok' : 'bad'}">${ev >= 0
+        ? `✅ Profitable at your extraction rate — you need ${money(breakEven)} loot per extract to break even.`
+        : `❌ Losing money at this extraction rate. You need ${money(breakEven)} loot per extract, or a cheaper kit.`}</div>
+      <p class="note">Expected value averages many raids — single runs swing hard either way. Assumptions on the <a href="/methodology/">methodology page</a>.</p>`;
+    (window as any).computeProfit = computeProfit;
+  }
+
+  (window as any).computeProfit = computeProfit;
+  document.getElementById('profit')?.addEventListener('input', computeProfit);
+  computeProfit();
+</script>

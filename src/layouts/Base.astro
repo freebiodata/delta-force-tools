@@ -9,10 +9,13 @@ interface Props {
   description: string;
   /** JSON-LD schema objects to embed */
   schema?: Record<string, unknown>[];
+  robots?: string;
+  noindex?: boolean;
 }
 
-const { title, description, schema = [] } = Astro.props;
+const { title, description, schema = [], robots, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const robotsContent = robots ?? (noindex ? 'noindex, nofollow' : undefined);
 ---
 
 <!doctype html>
@@ -23,6 +26,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {robotsContent && <meta name="robots" content={robotsContent} />}
     <meta name="theme-color" content="#0b0e0c" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -36,7 +40,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={SITE.brand} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={new URL('/og-default.png', Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('/og-default.png', Astro.site)} />
     {schema.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
   </head>
   <body>
